@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>Control PID - JGA-370</title>
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}"
+  >
+
+</head>
+
+<body>
+
+  <main class="dashboard">
+
+    <!-- =========================
+         ENCABEZADO
+    ========================== -->
+
+    <header class="topbar">
+
+      <div>
+
+        <p class="subtitle">
+          SISTEMA DE CONTROL
+        </p>
+
+        <h1>
+          Control PID · JGA-370
+        </h1>
+
+      </div>
+
+      <div class="top-actions">
+
+        <div
+          class="connection offline"
+          id="connection"
+        >
+
+          <span class="dot"></span>
+
+          <span id="connectionText">
+            Conectando...
+          </span>
+
+        </div>
+
+        <a
+          href="{{ url_for('logout') }}"
+          class="logout"
+        >
+          Salir
+        </a>
+
+      </div>
+
+    </header>
+
+
+    <!-- =========================
+         VELOCIDAD
+    ========================== -->
+
+    <section class="hero">
+
+      <div class="rpm-display">
+
+        <p class="label">
+          VELOCIDAD ACTUAL
+        </p>
+
+        <div class="rpm-number">
+
+          <span id="rpmActual">
+            0.0
+          </span>
+
+          <span class="rpm-unit">
+            RPM
+          </span>
+
+        </div>
+
+        <div class="rpm-bar">
+
+          <div
+            class="rpm-bar-fill"
+            id="rpmBar"
+          ></div>
+
+        </div>
+
+        <div class="rpm-scale">
+
+          <span>0</span>
+          <span>25</span>
+          <span>50</span>
+          <span>75</span>
+          <span>100 RPM</span>
+
+        </div>
+
+      </div>
+
+
+      <!-- SETPOINT -->
+
+      <div class="setpoint-display">
+
+        <p class="label">
+          SETPOINT
+        </p>
+
+        <div class="setpoint-number">
+
+          <span id="setpointDisplay">
+            0
+          </span>
+
+          <span class="setpoint-unit">
+            RPM
+          </span>
+
+        </div>
+
+        <p class="small-text">
+          Velocidad solicitada
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         CONTROL VELOCIDAD
+    ========================== -->
+
+    <section class="control-panel">
+
+      <div class="section-title">
+
+        <div>
+
+          <p class="label">
+            CONTROL DE VELOCIDAD
+          </p>
+
+          <h2>
+            Ajuste de velocidad
+          </h2>
+
+        </div>
+
+        <div class="target">
+
+          <span id="sliderValue">
+            0
+          </span>
+
+          <span>
+            RPM
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="slider-area">
+
+        <input
+          id="speedSlider"
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          value="0"
+        >
+
+        <div class="slider-scale">
+
+          <span>0</span>
+          <span>20</span>
+          <span>40</span>
+          <span>60</span>
+          <span>80</span>
+          <span>100</span>
+
+        </div>
+
+      </div>
+
+
+      <div class="buttons">
+
+        <button
+          id="startBtn"
+          class="btn start"
+          type="button"
+        >
+          ▶ Aplicar velocidad
+        </button>
+
+        <button
+          id="stopBtn"
+          class="btn stop"
+          type="button"
+        >
+          ■ Detener motor
+        </button>
+
+      </div>
+
+
+      <div class="export-container">
+
+        <a
+          href="{{ url_for('exportar') }}"
+          class="btn export"
+        >
+          ↓ Exportar datos a Excel
+        </a>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         DATOS
+    ========================== -->
+
+    <section class="data-grid">
+
+      <article class="data-card">
+
+        <div class="data-icon">
+          PWM
+        </div>
+
+        <div>
+
+          <p class="label">
+            SALIDA PWM
+          </p>
+
+          <div class="data-number">
+
+            <span id="pwmValue">
+              0.0
+            </span>
+
+            <span>
+              %
+            </span>
+
+          </div>
+
+          <p class="small-text">
+            Potencia aplicada
+          </p>
+
+        </div>
+
+      </article>
+
+
+      <article class="data-card">
+
+        <div class="data-icon">
+          Δ
+        </div>
+
+        <div>
+
+          <p class="label">
+            ERROR PID
+          </p>
+
+          <div class="data-number">
+
+            <span id="errorValue">
+              0.0
+            </span>
+
+            <span>
+              RPM
+            </span>
+
+          </div>
+
+          <p class="small-text">
+            Setpoint - velocidad real
+          </p>
+
+        </div>
+
+      </article>
+
+
+      <article class="data-card">
+
+        <div class="data-icon">
+          ENC
+        </div>
+
+        <div>
+
+          <p class="label">
+            SENSOR
+          </p>
+
+          <div class="data-text">
+            Encoder
+          </div>
+
+          <p class="small-text">
+            695 pulsos / vuelta
+          </p>
+
+        </div>
+
+      </article>
+
+
+      <article class="data-card">
+
+        <div class="data-icon">
+          M
+        </div>
+
+        <div>
+
+          <p class="label">
+            MOTOR
+          </p>
+
+          <div class="data-text">
+            JGA-370
+          </div>
+
+          <p class="small-text">
+            Rango 0 - 100 RPM
+          </p>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- =========================
+         PID EDITABLE
+    ========================== -->
+
+    <section class="pid-panel">
+
+      <div class="pid-title">
+
+        <p class="label">
+          CONTROLADOR
+        </p>
+
+        <h2>
+          Parámetros PID
+        </h2>
+
+        <p
+          class="pid-status"
+          id="pidStatus"
+        >
+          Modifica los valores y presiona Aplicar PID
+        </p>
+
+      </div>
+
+
+      <div class="pid-control-area">
+
+        <div class="pid-values">
+
+          <div class="pid-input-card">
+
+            <label for="kpInput">
+              Kp
+            </label>
+
+            <input
+              id="kpInput"
+              type="number"
+              min="0"
+              step="0.01"
+              value="0.8"
+            >
+
+          </div>
+
+
+          <div class="pid-input-card">
+
+            <label for="kiInput">
+              Ki
+            </label>
+
+            <input
+              id="kiInput"
+              type="number"
+              min="0"
+              step="0.01"
+              value="0.4"
+            >
+
+          </div>
+
+
+          <div class="pid-input-card">
+
+            <label for="kdInput">
+              Kd
+            </label>
+
+            <input
+              id="kdInput"
+              type="number"
+              min="0"
+              step="0.01"
+              value="0.02"
+            >
+
+          </div>
+
+        </div>
+
+
+        <button
+          id="applyPidBtn"
+          class="btn pid-button"
+          type="button"
+        >
+          Aplicar PID
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+      <span>Arduino UNO</span>
+      <span>•</span>
+      <span>L298N</span>
+      <span>•</span>
+      <span>JGA-370</span>
+      <span>•</span>
+      <span>Encoder</span>
+      <span>•</span>
+      <span>PID</span>
+
+    </footer>
+
+  </main>
+
+
+  <script
+    src="{{ url_for('static', filename='js/app.js') }}"
+  ></script>
+
+</body>
+
+</html>

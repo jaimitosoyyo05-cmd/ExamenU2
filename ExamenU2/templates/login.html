@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>
+    Login - Control PID
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}"
+  >
+
+</head>
+
+
+<body class="login-body">
+
+  <main class="login-card">
+
+    <div class="login-header">
+
+      <div class="login-icon">
+        PID
+      </div>
+
+      <p class="login-subtitle">
+        SISTEMA DE CONTROL
+      </p>
+
+      <h1>
+        Motor JGA-370
+      </h1>
+
+      <p class="login-description">
+        Control de velocidad mediante PID
+      </p>
+
+    </div>
+
+
+    <form
+      method="POST"
+      action="{{ url_for('login') }}"
+      class="login-form"
+    >
+
+      <div class="input-group">
+
+        <label for="username">
+          Usuario
+        </label>
+
+        <input
+          id="username"
+          name="username"
+          type="text"
+          placeholder="Ingresa tu usuario"
+          autocomplete="username"
+          required
+        >
+
+      </div>
+
+
+      <div class="input-group">
+
+        <label for="password">
+          Contraseña
+        </label>
+
+        <input
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Ingresa tu contraseña"
+          autocomplete="current-password"
+          required
+        >
+
+      </div>
+
+
+      {% if error %}
+
+      <div class="login-error">
+        {{ error }}
+      </div>
+
+      {% endif %}
+
+
+      <button
+        type="submit"
+        class="login-button"
+      >
+        Iniciar sesión
+      </button>
+
+    </form>
+
+
+    <div class="login-footer">
+
+      <div class="login-status">
+
+        <span class="login-dot"></span>
+
+        Sistema de control PID
+
+      </div>
+
+      <p>
+        Arduino UNO · L298N · JGA-370
+      </p>
+
+    </div>
+
+  </main>
+
+</body>
+
+</html>
